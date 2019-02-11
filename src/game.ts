@@ -113,13 +113,13 @@ export class RotateSystem {
 
       if (rotate.fraction > 1) {
         rotate.fraction = 0
-        rotate.originRot = transform.rotation.clone()
-        let direction = path.path[path.target].clone().subtract(path.path[path.origin].clone()).normalize()
+        rotate.originRot = transform.rotation
+        let direction = path.path[path.target].subtract(path.path[path.origin]).normalize()
         rotate.targetRot = Quaternion.LookRotation(direction)
       }  
       transform.rotation = Quaternion.Slerp(
-        rotate.originRot.clone(),
-        rotate.targetRot.clone(),
+        rotate.originRot,
+        rotate.targetRot,
         rotate.fraction
       )
     }
