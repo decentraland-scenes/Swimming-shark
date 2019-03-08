@@ -5,10 +5,10 @@
 let curvePoints = 25
 
 // Define the points through which the path must pass
-const cpoint1 = new Vector3(4, 2, 3)
-const cpoint2 = new Vector3(8, 5, 2)
-const cpoint3 = new Vector3(8, 6, 8)
-const cpoint4 = new Vector3(2, 2, 7)
+const cpoint1 = new Vector3(6.4, 3.2, 4.2)
+const cpoint2 = new Vector3(12.8, 8, 3.2)
+const cpoint3 = new Vector3(12.8, 7, 12.8)
+const cpoint4 = new Vector3(3.2, 3.2, 11.2)
 
 // Compile these points into an array
 const cpoints = [cpoint1, cpoint2, cpoint3, cpoint4]
@@ -50,9 +50,9 @@ export class SwimSpeed {
 export class PatrolPath {
   update() {
     for (let shark of sharks.entities){
-      let transform = shark.get(Transform)
-      let path = shark.get(PathData)
-      let speed = shark.get(SwimSpeed)
+      let transform = shark.getComponent(Transform)
+      let path = shark.getComponent(PathData)
+      let speed = shark.getComponent(SwimSpeed)
       transform.position = Vector3.Lerp(
         path.path[path.origin],
         path.path[path.target],
@@ -78,8 +78,8 @@ engine.addSystem(new PatrolPath(), 2)
 export class UpdateSpeed {
   update() {
     for (let shark of sharks.entities){
-      let speed = shark.get(SwimSpeed)
-      let path = shark.get(PathData)
+      let speed = shark.getComponent(SwimSpeed)
+      let path = shark.getComponent(PathData)
     
       let depthDiff = (path.path[path.target].y - path.path[path.origin].y) * curvePoints
       if (depthDiff > 1){
@@ -89,7 +89,7 @@ export class UpdateSpeed {
       }
       depthDiff += 1.5   // from 0.5 to 2.5
     
-      let clipSwim = shark.get(GLTFShape).getClip("swim")
+      let clipSwim = shark.getComponent(Animator).getClip("swim")
       clipSwim.speed = depthDiff
       clipSwim.weight = depthDiff
       
@@ -105,10 +105,10 @@ engine.addSystem(new UpdateSpeed(), 1)
 export class RotateSystem {
   update(dt: number) {
     for (let shark of sharks.entities){
-      let transform = shark.get(Transform)
-      let path = shark.get(PathData)
-      let rotate = shark.get(RotateData)
-      let speed = shark.get(SwimSpeed)
+      let transform = shark.getComponent(Transform)
+      let path = shark.getComponent(PathData)
+      let rotate = shark.getComponent(RotateData)
+      let speed = shark.getComponent(SwimSpeed)
       rotate.fraction +=  speed.speed/10
 
       if (rotate.fraction > 1) {
@@ -133,23 +133,26 @@ engine.addSystem(new RotateSystem(), 3)
 
 // Add Shark model
 let shark = new Entity()
-shark.set(new Transform({
+shark.addComponent(new Transform({
   position: new Vector3(1, 0, 1),
   scale: new Vector3(0.5, 0.5, 0.5)
 }))
-shark.set(new GLTFShape("models/shark.gltf"))
+shark.addComponent(new GLTFShape("models/shark.gltf"))
+shark.addComponent(new Animator())
 
 // Add animations
-const clipSwim3 = new AnimationClip("swim", {speed: 0.5, weight: 0.5})
-shark.get(GLTFShape).addClip(clipSwim3)
+const clipSwim3 = new AnimationClip("swim")
+clipSwim3.speed = 0.5
+clipSwim3.weight = 0.5
+shark.getComponent(Animator).addClip(clipSwim3)
 
 // Activate swim animation
 clipSwim3.play()
 
 // add a path data component
-shark.set(new PathData(catmullPath))
-shark.set(new RotateData())
-shark.set(new SwimSpeed())
+shark.addComponent(new PathData(catmullPath))
+shark.addComponent(new RotateData())
+shark.addComponent(new SwimSpeed())
 
 // Add shark to engine
 engine.addEntity(shark)
@@ -157,11 +160,11 @@ engine.addEntity(shark)
 
 // Add 3D model for scenery
 const seaBed = new Entity()
-seaBed.add(new GLTFShape("models/Underwater.gltf"))
-seaBed.add(new Transform({
-  position: new Vector3(5, 0, 5),
+seaBed.addComponent(new GLTFShape("models/Underwater.gltf"))
+seaBed.addComponent(new Transform({
+  position: new Vector3(8, 0, 8),
   rotation: Quaternion.Euler(0, 270, 0),
-  scale: new Vector3(0.5, 0.5, 0.5)
+  scale: new Vector3(0.8, 0.8, 0.8)
 
 }))
 engine.addEntity(seaBed)
