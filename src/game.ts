@@ -137,7 +137,7 @@ shark.addComponent(new Transform({
   position: new Vector3(1, 0, 1),
   scale: new Vector3(0.5, 0.5, 0.5)
 }))
-shark.addComponent(new GLTFShape("models/shark.gltf"))
+shark.addComponent(new GLTFShape("models/shark.glb"))
 shark.addComponent(new Animator())
 
 // Add animations
