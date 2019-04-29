@@ -141,7 +141,7 @@ shark.addComponent(new GLTFShape("models/shark.glb"))
 shark.addComponent(new Animator())
 
 // Add animations
-const clipSwim3 = new AnimationClip("swim")
+const clipSwim3 = new AnimationState("swim")
 clipSwim3.speed = 0.5
 clipSwim3.weight = 0.5
 shark.getComponent(Animator).addClip(clipSwim3)
