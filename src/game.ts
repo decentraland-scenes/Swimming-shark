@@ -163,7 +163,7 @@ const seaBed = new Entity()
 seaBed.addComponent(new GLTFShape("models/Underwater.gltf"))
 seaBed.addComponent(new Transform({
   position: new Vector3(8, 0, 8),
-  rotation: Quaternion.Euler(0, 270, 0),
+  rotation: Quaternion.Euler(0, 90, 0),
   scale: new Vector3(0.8, 0.8, 0.8)
 
 }))
