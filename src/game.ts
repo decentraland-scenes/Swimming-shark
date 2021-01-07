@@ -13,7 +13,7 @@ const cpoint4 = new Vector3(3.2, 3.2, 11.2)
 // Compile these points into an array
 const cpoints = [cpoint1, cpoint2, cpoint3, cpoint4]
 
-// Create a Catmull-Rom Spline curve. It that passes through all 4 points. The total number of points in the path is set by  `curvePoints`
+// Create a Catmull-Rom Spline curve. This curve passes through all 4 points. The total number of points in the path is set by  `curvePoints`
 let catmullPath = Curve3.CreateCatmullRomSpline(cpoints, curvePoints, true).getPoints()
 
 // Custom component to store path and lerp data
@@ -28,7 +28,7 @@ export class PathData {
   }
 }
 
-// component group of all sharks
+// component group of all sharks (just one in this example, but could be extended)
 export const sharks = engine.getComponentGroup(PathData)
 
 // Custom component to store rotational lerp data
@@ -74,7 +74,7 @@ export class PatrolPath {
 
 engine.addSystem(new PatrolPath(), 2)
 
-// Change speed depending on how steep is the shark's path
+// Change speed depending on how steep the current section of the shark's path is
 export class UpdateSpeed {
   update() {
     for (let shark of sharks.entities){
