@@ -1,7 +1,7 @@
 // Create path curve
 
 // how many points on the curve
-let curvePoints = 25
+const curvePoints = 25
 
 // Define the points through which the path must pass
 const cpoint1 = new Vector3(6.4, 3.2, 4.2)
@@ -13,7 +13,7 @@ const cpoint4 = new Vector3(3.2, 3.2, 11.2)
 const cpoints = [cpoint1, cpoint2, cpoint3, cpoint4]
 
 // Create a Catmull-Rom Spline curve. This curve passes through all 4 points. The total number of points in the path is set by  `curvePoints`
-let catmullPath = Curve3.CreateCatmullRomSpline(
+const catmullPath = Curve3.CreateCatmullRomSpline(
   cpoints,
   curvePoints,
   true
@@ -51,10 +51,10 @@ export class SwimSpeed {
 // Lerp over the points of the curve
 export class PatrolPath {
   update() {
-    for (let shark of sharks.entities) {
-      let transform = shark.getComponent(Transform)
-      let path = shark.getComponent(PathData)
-      let speed = shark.getComponent(SwimSpeed)
+    for (const shark of sharks.entities) {
+      const transform = shark.getComponent(Transform)
+      const path = shark.getComponent(PathData)
+      const speed = shark.getComponent(SwimSpeed)
       transform.position = Vector3.Lerp(
         path.path[path.origin],
         path.path[path.target],
@@ -78,9 +78,9 @@ engine.addSystem(new PatrolPath(), 2)
 // Change speed depending on how steep the current section of the shark's path is
 export class UpdateSpeed {
   update() {
-    for (let shark of sharks.entities) {
-      let speed = shark.getComponent(SwimSpeed)
-      let path = shark.getComponent(PathData)
+    for (const shark of sharks.entities) {
+      const speed = shark.getComponent(SwimSpeed)
+      const path = shark.getComponent(PathData)
 
       let depthDiff =
         (path.path[path.target].y - path.path[path.origin].y) * curvePoints
@@ -91,7 +91,7 @@ export class UpdateSpeed {
       }
       depthDiff += 1.5 // from 0.5 to 2.5
 
-      let clipSwim = shark.getComponent(Animator).getClip('swim')
+      const clipSwim = shark.getComponent(Animator).getClip('swim')
       clipSwim.speed = depthDiff
       clipSwim.weight = depthDiff
 
@@ -106,17 +106,17 @@ engine.addSystem(new UpdateSpeed(), 1)
 // Rotate gradually with a spherical lerp
 export class RotateSystem {
   update(dt: number) {
-    for (let shark of sharks.entities) {
-      let transform = shark.getComponent(Transform)
-      let path = shark.getComponent(PathData)
-      let rotate = shark.getComponent(RotateData)
-      let speed = shark.getComponent(SwimSpeed)
+    for (const shark of sharks.entities) {
+      const transform = shark.getComponent(Transform)
+      const path = shark.getComponent(PathData)
+      const rotate = shark.getComponent(RotateData)
+      const speed = shark.getComponent(SwimSpeed)
       rotate.fraction += speed.speed / 10
 
       if (rotate.fraction > 1) {
         rotate.fraction = 0
         rotate.originRot = transform.rotation
-        let direction = path.path[path.target]
+        const direction = path.path[path.target]
           .subtract(path.path[path.origin])
           .normalize()
         rotate.targetRot = Quaternion.LookRotation(direction)
@@ -133,11 +133,11 @@ export class RotateSystem {
 engine.addSystem(new RotateSystem(), 3)
 
 // Add Shark model
-let shark = new Entity()
+const shark = new Entity()
 shark.addComponent(
   new Transform({
     position: new Vector3(1, 0, 1),
-    scale: new Vector3(0.5, 0.5, 0.5),
+    scale: new Vector3(0.5, 0.5, 0.5)
   })
 )
 shark.addComponent(new GLTFShape('models/shark.glb'))
@@ -167,8 +167,14 @@ seaBed.addComponent(
   new Transform({
     position: new Vector3(8, 0, 8),
     rotation: Quaternion.Euler(0, 90, 0),
-    scale: new Vector3(0.8, 0.8, 0.8),
+    scale: new Vector3(0.8, 0.8, 0.8)
   })
 )
 
 engine.addEntity(seaBed)
+
+onCameraModeChanged.add(({ cameraMode }) => {
+  log('onCameraModeChanged:', cameraMode)
+  log('Current CameraMode:', Camera.instance.cameraMode)
+})
+//   CameraMode.FirstPerson
